@@ -40,4 +40,57 @@ async function day1() {
   return similarities.reduce((prev, curr) => prev + curr, 0);
 }
 
-console.log(await day1());
+// console.log(await day1());
+
+async function day2() {
+  const input = await fs.readFile("input-d02.txt", "utf-8");
+  const lines = input.split("\n").filter((line) => line !== "");
+
+  let safeReports = 0;
+  for (const line of lines) {
+    const levels = line.split(" ").map(Number);
+    if (checkLevels(levels)) {
+      safeReports++;
+    } else {
+      // part 2
+      for (const [index] of levels.entries()) {
+        if (
+          checkLevels([...levels.slice(0, index), ...levels.slice(index + 1)])
+        ) {
+          safeReports++;
+          break;
+        }
+      }
+    }
+  }
+  return safeReports;
+}
+
+console.log(await day2());
+
+function checkLevels(levels: number[]): boolean {
+  let gradient: "inc" | "dec" | null = null;
+  for (const [index, level] of levels.entries()) {
+    if (index === levels.length - 1) {
+      // last element, no next
+      return true;
+    }
+    const nextLevel = levels[index + 1];
+    const diff = nextLevel - level;
+    if (Math.abs(diff) < 1 || Math.abs(diff) > 3) {
+      break;
+    }
+    if (diff > 0) {
+      if (gradient === "dec") {
+        break;
+      }
+      gradient = "inc";
+    } else {
+      if (gradient === "inc") {
+        break;
+      }
+      gradient = "dec";
+    }
+  }
+  return false;
+}
