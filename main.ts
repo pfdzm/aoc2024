@@ -66,7 +66,7 @@ async function day2() {
   return safeReports;
 }
 
-console.log(await day2());
+// console.log(await day2());
 
 function checkLevels(levels: number[]): boolean {
   let gradient: "inc" | "dec" | null = null;
@@ -94,3 +94,56 @@ function checkLevels(levels: number[]): boolean {
   }
   return false;
 }
+
+async function day3(fileName: string) {
+  console.log("\n", fileName, "\n");
+  const input = await fs.readFile(fileName, "utf-8");
+  const line = input
+    .split("\n")
+    .filter((line) => line !== "")
+    .join("");
+  const mults = [];
+
+  const ranges = [];
+
+  const instructions = line.matchAll(
+    new RegExp(String.raw`do\(\)|don't\(\)`, "gd")
+  );
+  for (const instructionMatch of instructions) {
+    const end =
+      instructionMatch.indices?.at(0)?.at(1) ??
+      fail("expected do to have index");
+    ranges.push({
+      type: instructionMatch[0] === "do()" ? "do" : "don't",
+      end,
+    });
+  }
+
+  const regExp = new RegExp(String.raw`mul\((\d+),(\d+)\)`, "g");
+  const results = line.matchAll(regExp);
+  for (const match of results) {
+    let relevantRange = ranges.findLast(
+      (range) => range.end <= match.index
+    ) ?? {
+      type: "do",
+      end: 0,
+    };
+
+    if (relevantRange.type === "do") {
+      const [, left, right] = match;
+      mults.push([parseInt(left), parseInt(right)]);
+      continue;
+    }
+  }
+
+  return mults.reduce((prev, [left, right]) => {
+    return prev + left * right;
+  }, 0);
+}
+
+console.log(await day3("input-d03-example.txt"));
+console.log(await day3("input-d03.txt"));
+
+const fail = (message: string) => {
+  throw new Error(message);
+};
