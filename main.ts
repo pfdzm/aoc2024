@@ -141,9 +141,180 @@ async function day3(fileName: string) {
   }, 0);
 }
 
-console.log(await day3("input-d03-example.txt"));
-console.log(await day3("input-d03.txt"));
-
+// console.log(await day3("input-d03-example.txt"));
+// console.log(await day3("input-d03.txt"));
 const fail = (message: string) => {
   throw new Error(message);
 };
+const letters = "XMAS";
+
+async function day4(fileName: string) {
+  console.log("\n", fileName, "\n");
+  const input = await fs.readFile(fileName, "utf-8");
+  // const lines = input.split("\n").map((line) => line.split(""));
+
+  const possibleStartLocations = [];
+  const matrix = input
+    .split("\n")
+    .filter((line) => line !== "")
+    .map((line) => line.split(""));
+  for (const [i, row] of matrix.entries()) {
+    for (const [j, col] of row.entries()) {
+      if (col !== "X") {
+        continue;
+      }
+      possibleStartLocations.push([i, j]);
+    }
+  }
+
+  const finders = [
+    findLeft,
+    findRight,
+    findTop,
+    findBottom,
+    findBottomLeft,
+    findBottomRight,
+    findTopLeft,
+    findTopRight,
+  ];
+
+  let matches = 0;
+  for (const startLocation of possibleStartLocations) {
+    matches += finders
+      .map((find) => find(startLocation, matrix))
+      .reduce((prev, curr) => prev + (curr ? 1 : 0), 0);
+  }
+  return matches;
+}
+
+console.log(await day4("input-d04-example.txt"));
+console.log(await day4("input-d04.txt"));
+
+// left i.e. backwards
+function findLeft([row, col]: number[], matrix: string[][]): boolean {
+  if (col < 3) {
+    // starting point is too far to the left
+    return false;
+  }
+  for (let i = 1; i < 4; i++) {
+    if (matrix[row][col - i] !== letters[i]) {
+      return false;
+    }
+  }
+  console.log("findLeft", [row, col]);
+  return true;
+}
+
+function findRight([row, col]: number[], matrix: string[][]): boolean {
+  if (col > (matrix.at(0) ?? fail("expected to find a row")).length - 1 - 3) {
+    // starting point is too far to the right
+    return false;
+  }
+  for (let i = 1; i < 4; i++) {
+    if (matrix[row][col + i] !== letters[i]) {
+      return false;
+    }
+  }
+  console.log("foundRight", [row, col]);
+  return true;
+}
+
+function findTop([row, col]: number[], matrix: string[][]): boolean {
+  if (row < 3) {
+    // starting point is too far to the top
+    return false;
+  }
+  for (let i = 1; i < 4; i++) {
+    if (matrix[row - i][col] !== letters[i]) {
+      return false;
+    }
+  }
+  console.log("findTop", [row, col]);
+  return true;
+}
+
+function findBottom([row, col]: number[], matrix: string[][]): boolean {
+  if (row > matrix.length - 1 - 3) {
+    // starting point is too far to the bottom
+    return false;
+  }
+  for (let i = 1; i < 4; i++) {
+    if (matrix[row + i][col] !== letters[i]) {
+      return false;
+    }
+  }
+  console.log("findBottom", [row, col]);
+  return true;
+}
+
+function findTopRight([row, col]: number[], matrix: string[][]): boolean {
+  if (row < 3) {
+    // starting point is too far to the top
+    return false;
+  }
+  if (col > (matrix.at(0) ?? fail("expected to find a row")).length - 1 - 3) {
+    // starting point is too far to the right
+    return false;
+  }
+  for (let i = 1; i < 4; i++) {
+    if (matrix[row - i][col + i] !== letters[i]) {
+      return false;
+    }
+  }
+  console.log("findTopRight", [row, col]);
+  return true;
+}
+
+function findTopLeft([row, col]: number[], matrix: string[][]): boolean {
+  if (row < 3) {
+    // starting point is too far to the top
+    return false;
+  }
+  if (col < 3) {
+    // starting point is too far to the left
+    return false;
+  }
+  for (let i = 1; i < 4; i++) {
+    if (matrix[row - i][col - i] !== letters[i]) {
+      return false;
+    }
+  }
+  console.log("findTopLeft", [row, col]);
+  return true;
+}
+
+function findBottomRight([row, col]: number[], matrix: string[][]): boolean {
+  if (row > matrix.length - 1 - 3) {
+    // starting point is too far to the bottom
+    return false;
+  }
+  if (col > (matrix.at(0) ?? fail("expected to find a row")).length - 1 - 3) {
+    // starting point is too far to the right
+    return false;
+  }
+  for (let i = 1; i < 4; i++) {
+    if (matrix[row + i][col + i] !== letters[i]) {
+      return false;
+    }
+  }
+  console.log("findBottomRight", [row, col]);
+  return true;
+}
+
+function findBottomLeft([row, col]: number[], matrix: string[][]): boolean {
+  if (row > matrix.length - 1 - 3) {
+    // starting point is too far to the bottom
+    return false;
+  }
+  if (col < 3) {
+    // starting point is too far to the right
+    return false;
+  }
+  for (let i = 1; i < 4; i++) {
+    if (matrix[row + i][col - i] !== letters[i]) {
+      return false;
+    }
+  }
+  console.log("findBottomLeft", [row, col]);
+  return true;
+}
