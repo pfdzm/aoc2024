@@ -18,8 +18,6 @@ async function day1() {
   const sortedLeftCol = leftCol.slice().sort((a, b) => a - b);
   const sortedRightCol = rightCol.slice().sort((a, b) => a - b);
 
-  console.log(sortedLeftCol);
-  console.log(sortedRightCol);
 
   if (sortedLeftCol.length !== sortedRightCol.length) {
     throw new Error("columns have different lengths!");
@@ -148,7 +146,6 @@ async function day3(fileName: string) {
 
 console.log(await day4("input-d04-example.txt"));
 console.log(await day4("input-d04.txt"));
-
 
 console.log(await day5("input-d05-example.txt"));
 console.log(await day5("input-d05.txt"));
