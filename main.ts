@@ -1,4 +1,5 @@
 import fs from "node:fs/promises";
+import { day5 } from "./day5";
 import { fail } from "./utils";
 import { day4 } from "./day4";
 
@@ -149,3 +150,5 @@ console.log(await day4("input-d04-example.txt"));
 console.log(await day4("input-d04.txt"));
 
 
+console.log(await day5("input-d05-example.txt"));
+console.log(await day5("input-d05.txt"));
