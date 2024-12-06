@@ -2,6 +2,7 @@ import fs from "node:fs/promises";
 import { day5 } from "./day5";
 import { fail } from "./utils";
 import { day4 } from "./day4";
+import { day6 } from "./day6";
 
 async function day1() {
   const input = await fs.readFile("input-d01.txt", "utf-8");
@@ -144,8 +145,12 @@ async function day3(fileName: string) {
 // console.log(await day3("input-d03-example.txt"));
 // console.log(await day3("input-d03.txt"));
 
-console.log(await day4("input-d04-example.txt"));
-console.log(await day4("input-d04.txt"));
+// console.log(await day4("input-d04-example.txt"));
+// console.log(await day4("input-d04.txt"));
+// 
+// console.log(await day5("input-d05-example.txt"));
+// console.log(await day5("input-d05.txt"));
 
-console.log(await day5("input-d05-example.txt"));
-console.log(await day5("input-d05.txt"));
+
+console.log(await day6("input-d06-example.txt"));
+console.log(await day6("input-d06.txt"));
